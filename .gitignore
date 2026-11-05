@@ -1,0 +1,10 @@
+.env
+.env.*
+!.env.example
+.neon
+node_modules/
+dist/
+playwright-report/
+test-results/
+test-results-*/
+.vercel/

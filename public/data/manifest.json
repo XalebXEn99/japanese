@@ -1,0 +1,126 @@
+{
+  "levels": {
+    "N5": {
+      "vocabulary": 674,
+      "kanji": 84,
+      "grammar": 20
+    },
+    "N4": {
+      "vocabulary": 630,
+      "kanji": 169,
+      "grammar": 20
+    },
+    "N3": {
+      "vocabulary": 1659,
+      "kanji": 387,
+      "grammar": 20
+    },
+    "N2": {
+      "vocabulary": 1778,
+      "kanji": 398,
+      "grammar": 20
+    },
+    "N1": {
+      "vocabulary": 3070,
+      "kanji": 1345,
+      "grammar": 20
+    }
+  },
+  "sources": [
+    {
+      "name": "JMdict — James William Breen / Electronic Dictionary Research and Development Group",
+      "url": "https://www.edrdg.org/wiki/index.php/JMdict-EDICT_Dictionary_Project",
+      "license": "CC BY-SA 4.0",
+      "usage": "Vocabulary verification, corrected spellings/readings/glosses and part-of-speech metadata via OpenJLPT; romanized here. No imported Tatoeba examples."
+    },
+    {
+      "name": "KANJIDIC2 — James William Breen / EDRDG",
+      "url": "https://www.edrdg.org/wiki/index.php/KANJIDIC_Project",
+      "license": "CC BY-SA 4.0",
+      "usage": "Kanji stroke counts, Japanese readings and English meanings via OpenJLPT. Levels are community estimates, not official JLPT assignments."
+    },
+    {
+      "name": "OpenJLPT — Evan Clan and contributors",
+      "url": "https://github.com/evanclan/OpenJLPT",
+      "license": "CC BY-SA 4.0",
+      "usage": "Verified vocabulary and kanji JSON, revision 0d1d3410bec90bd4098a7c72de820543cb4f707c; fields mapped to this app, vocabulary romanized and categorized. Upstream NOTICE and LICENSE included locally."
+    },
+    {
+      "name": "Jonathan Waller's JLPT Resources",
+      "url": "https://www.tanos.co.uk/jlpt/",
+      "license": "CC BY (as recorded in OpenJLPT NOTICE)",
+      "usage": "Community-estimated N5–N1 level lists and vocabulary glosses through OpenJLPT. Attribution/license documented in its pinned NOTICE.md; original host DNS was unavailable at verification time. No claim of official exam coverage."
+    },
+    {
+      "name": "KanjiVG — Ulrich Apel and contributors",
+      "url": "https://kanjivg.tagaini.net/",
+      "license": "CC BY-SA 3.0",
+      "usage": "Unmodified SVGs, revision 610091ce618cf757ed1357a8954cd65283e015d6; 2548 single-character stroke diagrams. Missing codepoints: none. Multi-kana combinations are written as their separate component characters."
+    },
+    {
+      "name": "Original Japanese curriculum",
+      "url": "https://creativecommons.org/licenses/by-sa/4.0/",
+      "license": "CC BY-SA 4.0",
+      "usage": "Original grammar explanations, examples, exercises, kana tables and estimated study sequence; not endorsed by JLPT or dictionary authors."
+    },
+    {
+      "name": "Tae Kim's Guide to Learning Japanese (reference only)",
+      "url": "https://guidetojapanese.org/learn/grammar",
+      "license": "CC BY-NC-SA 3.0 US (official grammar guide web page)",
+      "usage": "Local PDF reference at grammar_guide.pdf, copied unmodified for noncommercial study. The 353-page PDF has no discoverable license notice; the official corresponding grammar-guide page explicitly supplies this license. Not the source of the authored lessons; not claimed to cover every N1 topic."
+    }
+  ],
+  "levelAssignment": "ESTIMATED: no official exhaustive JLPT vocabulary/kanji syllabus exists. Vocabulary and kanji use Jonathan Waller's community level assignments, corrected and deduplicated by OpenJLPT. Grammar levels are independently authored estimates. None is an official exam guarantee.",
+  "upstream": [
+    {
+      "url": "https://raw.githubusercontent.com/evanclan/OpenJLPT/0d1d3410bec90bd4098a7c72de820543cb4f707c/data/json/vocab/n5.json",
+      "sha256": "cbb221c9a3a92108fcd02fb088d9afacc70bc8c96570d5730425de0a49dad5f3"
+    },
+    {
+      "url": "https://raw.githubusercontent.com/evanclan/OpenJLPT/0d1d3410bec90bd4098a7c72de820543cb4f707c/data/json/kanji/n5.json",
+      "sha256": "c81458831e5e2e807ce0bb81a5af971d493ac8a9243701005eb57fe353990fce"
+    },
+    {
+      "url": "https://raw.githubusercontent.com/evanclan/OpenJLPT/0d1d3410bec90bd4098a7c72de820543cb4f707c/data/json/vocab/n4.json",
+      "sha256": "b38512a6dc1e06a3615f377b3e58184c4a85b6f769c2e3f58f2a4ef0e1810927"
+    },
+    {
+      "url": "https://raw.githubusercontent.com/evanclan/OpenJLPT/0d1d3410bec90bd4098a7c72de820543cb4f707c/data/json/kanji/n4.json",
+      "sha256": "a034d51bea0ee6c9ee1cc48b1cc83d9602641b9f5d38d99a55f5136f447a58d8"
+    },
+    {
+      "url": "https://raw.githubusercontent.com/evanclan/OpenJLPT/0d1d3410bec90bd4098a7c72de820543cb4f707c/data/json/vocab/n3.json",
+      "sha256": "17ca6bcbba9d212c3c9d38c38cecc2adef0fd8718cb7157bb48dd9d3a1724948"
+    },
+    {
+      "url": "https://raw.githubusercontent.com/evanclan/OpenJLPT/0d1d3410bec90bd4098a7c72de820543cb4f707c/data/json/kanji/n3.json",
+      "sha256": "c81669777f0ea37f848105babf8177ab36e968900307e5118b57e4156ed05fef"
+    },
+    {
+      "url": "https://raw.githubusercontent.com/evanclan/OpenJLPT/0d1d3410bec90bd4098a7c72de820543cb4f707c/data/json/vocab/n2.json",
+      "sha256": "4c7053d1b61f71ca4004252cafdf89439c65531900e7bab6c53078802acf3c5b"
+    },
+    {
+      "url": "https://raw.githubusercontent.com/evanclan/OpenJLPT/0d1d3410bec90bd4098a7c72de820543cb4f707c/data/json/kanji/n2.json",
+      "sha256": "2e3bd6f9a26d8794aad2dd770b094836bc6c478950202d631e5fb9233e26cc85"
+    },
+    {
+      "url": "https://raw.githubusercontent.com/evanclan/OpenJLPT/0d1d3410bec90bd4098a7c72de820543cb4f707c/data/json/vocab/n1.json",
+      "sha256": "09325eb676ec26044e9019afb5ddd460a394a0d8cb51b0b34d30d03124c131ff"
+    },
+    {
+      "url": "https://raw.githubusercontent.com/evanclan/OpenJLPT/0d1d3410bec90bd4098a7c72de820543cb4f707c/data/json/kanji/n1.json",
+      "sha256": "1814dd4fd4b363854fb861f091c2ca408bac01c96dddb6e9b3a5e2566069a79e"
+    },
+    {
+      "url": "https://codeload.github.com/KanjiVG/kanjivg/tar.gz/610091ce618cf757ed1357a8954cd65283e015d6",
+      "sha256": "8c8a66ca5116245c29ce650c105866c21dc6ba3501bbdc252cd81097bec66e6e"
+    }
+  ],
+  "strokeCoverage": {
+    "available": 2548,
+    "missing": []
+  },
+  "grammarReference": "grammar_guide.pdf",
+  "schemaVersion": 1
+}
