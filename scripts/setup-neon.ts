@@ -5,28 +5,29 @@ import { neon } from '@neondatabase/serverless';
 
 let stage = 'loading environment';
 async function setup() {
-  config({ path: '.env.local', quiet: true });
-  config({ quiet: true });
-  const { DATABASE_URL, NEON_AUTH_BASE_URL } = process.env;
-  if (!DATABASE_URL || !NEON_AUTH_BASE_URL) {
-    throw new Error('Run neon deploy and neon env pull --file .env.local before setup');
+  const path = process.env.NEON_ENV_FILE || '.env.local';
+  const loaded = config({ path, quiet: true });
+  if (loaded.error) throw loaded.error;
+  const { DATABASE_URL_UNPOOLED, NEON_AUTH_BASE_URL, NEON_DATA_API_URL } = process.env;
+  if (!DATABASE_URL_UNPOOLED || !NEON_AUTH_BASE_URL || !NEON_DATA_API_URL) {
+    throw new Error("Pull the same branch's postgres, auth, and data-api environment before setup.");
   }
   stage = 'reading progress schema';
-  const sql = neon(DATABASE_URL);
-  const schema = await readFile(fileURLToPath(new URL('../server/schema.sql', import.meta.url)), 'utf8');
+  const sql = neon(DATABASE_URL_UNPOOLED);
+  const schemas = await Promise.all(['schema.sql', 'data-api.sql'].map(name =>
+    readFile(fileURLToPath(new URL(`../server/${name}`, import.meta.url)), 'utf8')));
   stage = 'applying progress schema';
-  await sql.query(schema);
+  await sql.transaction(schemas.map(schema => sql.query(schema)));
   stage = 'writing frontend aliases';
-  const path = '.env.local';
-  let contents = await readFile(path, 'utf8').catch(() => '');
-  const aliases = { VITE_NEON_AUTH_URL: NEON_AUTH_BASE_URL, VITE_API_URL: '' };
+  let contents = await readFile(path, 'utf8');
+  const aliases = { VITE_NEON_AUTH_URL: NEON_AUTH_BASE_URL, VITE_NEON_DATA_API_URL: NEON_DATA_API_URL };
   for (const [key, value] of Object.entries(aliases)) {
     const line = `${key}=${JSON.stringify(value)}`;
     const existing = new RegExp(`^${key}=.*$`, 'm');
     contents = existing.test(contents) ? contents.replace(existing, () => line) : `${contents.trimEnd()}\n${line}\n`;
   }
   await writeFile(path, contents);
-  console.log('Progress schema ready; public frontend auth aliases written to .env.local. No user data changed.');
+  console.log(`Protected progress schema ready; public Auth/Data API aliases written to ${path}. Existing user data was preserved.`);
 }
 
 setup().catch(() => {

@@ -1,6 +1,6 @@
 # 化 · ka · change
 
-A functional, responsive Japanese study app for personal, noncommercial use. The frontend is static and can run on GitHub Pages at **https://japanese.thestone.co.za**. Better Auth accounts use Neon Managed Auth; a separate Node API stores progress in the existing London Neon project.
+A functional, responsive Japanese study app for personal, noncommercial use. GitHub Pages hosts the frontend at **https://japanese.thestone.co.za**. Accounts use Neon Managed Auth, and authenticated progress sync uses Neon's managed Data API in the existing London project. No additional application host is required.
 
 ## What works
 
@@ -37,28 +37,19 @@ Handwriting feedback measures similarity to ordered reference strokes. It is not
 
 ## Run locally
 
-Use Node.js 22 and npm. The current `.env.local` is already configured for the linked Neon **main** branch. It is ignored by Git.
+Use Node.js 22 and npm. The current `.env.local` is configured for the linked Neon **main** branch. It is ignored by Git.
 
 ```powershell
 npm ci
 npm run db:setup
-```
-
-In two terminals:
-
-```powershell
-npm run dev:api
-```
-
-```powershell
 npm run dev
 ```
 
-Open **http://127.0.0.1:5173**. Vite proxies `/api` to port 3001. Guest learning works without the API; account sync requires it.
+Open **http://127.0.0.1:5173**. Only Vite is needed: the browser connects directly to Neon Auth and the Data API. Guest learning works without cloud configuration.
 
-The local API command uses IPv4-first Node networking to avoid intermittent authentication-key and database connection timeouts on Windows. Run both servers when testing account sync.
+For a fresh environment, provision Auth and the Data API as below, then pull the same branch's `postgres`, `auth`, and `data-api` environment into `.env.local`. Setup uses `DATABASE_URL_UNPOOLED` for its transactional schema migration and writes both public frontend aliases. Set `NEON_ENV_FILE` to use another ignored environment file without changing the linked branch.
 
-For a fresh environment, copy `.env.example` to `.env.local`, configure the server variables, and set `VITE_NEON_AUTH_URL` to the branch's **public Auth URL**, not its database connection string. Never put `DATABASE_URL` or credentials in a `VITE_*` variable.
+Never put `DATABASE_URL`, `DATABASE_URL_UNPOOLED`, passwords, or admin credentials in a `VITE_*` variable. The browser only needs the public Auth and Data API HTTPS URLs.
 
 ## Validate
 
@@ -76,31 +67,44 @@ $env:PLAYWRIGHT_CHANNEL = 'msedge'
 npm run test:e2e
 ```
 
-Tests cover answer normalization, scheduling, conflict merges, handwriting metrics, curriculum integrity, API authentication/ownership/concurrency, seasonal asset dimensions, daily challenges, and real-browser learning/appearance flows.
+Tests cover answer normalization, scheduling, conflict merges, handwriting metrics, curriculum integrity, legacy API authentication/ownership/concurrency, seasonal asset dimensions, daily challenges, and real-browser learning/appearance flows.
 
-An optional live account test creates a uniquely named temporary user, verifies session restoration and cross-browser sync, then deletes that user and its progress. It requires the authenticated Neon CLI, `.env.local`, and both local servers:
+An optional live account test creates a uniquely named temporary user, verifies session restoration and cross-browser sync, then deletes that user and its progress. It requires the authenticated Neon CLI and `.env.local`; Playwright starts Vite automatically:
 
 ```powershell
 $env:RUN_LIVE_AUTH = '1'
-npm run test:e2e
+npm run test:e2e -- live-auth --workers=1
 ```
+
+To verify the deployed site instead:
+
+```powershell
+$env:PLAYWRIGHT_CHANNEL = 'msedge'
+$env:PLAYWRIGHT_BASE_URL = 'https://japanese.thestone.co.za'
+$env:RUN_LIVE_AUTH = '1'
+npm run test:e2e -- live-auth --workers=1
+```
+
+The live test uses the site's deployed Auth/Data API URLs. Private local database configuration and Neon CLI access are still needed to clean up its isolated test account and progress. When testing another branch, set both `NEON_ENV_FILE` and `LIVE_AUTH_BRANCH` to that branch's configuration.
 
 ## Deploy
 
-### 1. Progress API on Vercel
+### 1. Neon Auth and managed Data API
 
-Deploy this project with the included `vercel.json` and `api/index.ts`. Set these **server-only** environment variables from the production Neon branch:
+Use the existing project and branch. Auth is declared in `neon.ts`. Provision the Data API with automatic grants disabled; never expose all public tables:
 
-- `DATABASE_URL`
-- `NEON_AUTH_BASE_URL`
-- `NEON_AUTH_JWKS_URL`
-- `CORS_ORIGINS` if additional frontend origins are required
+```powershell
+neon data-api create --branch main --database neondb --auth-provider neon_auth --add-default-grants=false --db-max-rows 1 --db-schemas public --server-cors-allowed-origins 'http://127.0.0.1:5173,http://localhost:5173,https://japanese.thestone.co.za'
+neon env pull --branch main --file .env.local -s postgres -s auth -s data-api
+npm run db:setup
+neon data-api refresh-schema --branch main --database neondb
+```
 
-Initialize the production schema with `npm run db:setup` using that branch's server environment. The main branch schema has already been initialized during setup.
+Run `create` only if `neon data-api get --branch main` reports that the service does not exist. `server/schema.sql` and `server/data-api.sql` are applied in one transaction. Existing rows and account IDs are preserved.
 
-The API exposes public `GET /api/health`, protected `GET /api/progress`, and protected `PUT /api/progress`. Bearer JWT subject identifies the owner; clients cannot choose another user's ID. Writes use revision-based concurrency checks. Keep the API URL for the next step.
+The database derives ownership from the verified JWT, enforces per-user row-level security, and grants only the columns needed for reading and saving progress. Browser clients cannot select an owner, change owners, delete rows, or access another account. Revision checks prevent stale writes overwriting newer progress. Anonymous table access is not granted.
 
-London does not currently support Neon Functions, so the API is configured for Vercel rather than moving your database to another region.
+The older Node API files are retained for compatibility but are not used by the frontend and do not need deployment.
 
 ### 2. Frontend on GitHub Pages
 
@@ -109,9 +113,9 @@ Use **this directory as the root of a dedicated GitHub repository**. The Pages w
 1. In GitHub repository **Settings → Pages**, choose **GitHub Actions**.
 2. Set repository **Actions variables**:
    - `VITE_NEON_AUTH_URL`: the public production Neon Auth URL.
-   - `VITE_API_URL`: the deployed API origin, e.g. `https://your-api.vercel.app`, without `/api`.
+   - `VITE_NEON_DATA_API_URL`: the public production Data API URL, including `/neondb/rest/v1`.
 3. Set the Pages custom domain to `japanese.thestone.co.za`.
-4. Add a DNS **CNAME** for `japanese` pointing to `<repository-owner>.github.io`, not a repository URL or the Vercel API.
+4. Add a DNS **CNAME** for `japanese` pointing to `<repository-owner>.github.io`, not a repository URL.
 5. After DNS verification, enable **Enforce HTTPS**.
 6. Push to `main` or run the Pages workflow manually.
 
@@ -119,7 +123,7 @@ The bundled `public/CNAME` preserves your custom domain. Hash-based routes work 
 
 The production frontend origin is already registered as trusted in main's Neon Auth configuration. Add preview origins explicitly before using them. Neon production email delivery may require custom SMTP; test password-reset delivery after configuring it.
 
-**Deployment and DNS are not performed by the local build.** Verify the hosted signup/login, sync, password-reset email, and Japanese audio on your actual phone after deployment.
+**Deployment and DNS are not performed by the local build.** Verify hosted signup/login, sync, password-reset email, and Japanese audio on your actual phone after deployment.
 
 ## Progress behavior
 

@@ -1,23 +1,8 @@
 import { useCallback, useEffect, useRef, useState } from 'react';
-import { emptyProgress, mergeProgress, progressSchema, type Progress } from '../../shared/progress';
-import { accessToken } from '../lib/auth';
+import { emptyProgress, mergeProgress, type Progress } from '../../shared/progress';
+import { requestProgress as request } from '../lib/progress-api';
 import { readProgress, saveProgress } from '../lib/storage';
 
-const API = (import.meta.env.VITE_API_URL || '').replace(/\/$/, '');
-interface RemoteProgress { progress: Progress | null; revision: number }
-async function request(method: 'GET' | 'PUT', body?: unknown): Promise<{ status: number; data: RemoteProgress }> {
-  const response = await fetch(`${API}/api/progress`, {
-    method, headers: { Authorization: `Bearer ${await accessToken()}`, ...(body ? { 'Content-Type': 'application/json' } : {}) },
-    ...(body ? { body: JSON.stringify(body) } : {}),
-  });
-  if (!response.ok && response.status !== 409) {
-    const message = await response.text();
-    throw new Error(`Account sync failed (${response.status}). ${message.slice(0, 180)}`);
-  }
-  const json: unknown = await response.json();
-  if (!json || typeof json !== 'object' || !('revision' in json) || typeof json.revision !== 'number' || !('progress' in json)) throw new Error('The sync server returned invalid progress.');
-  return { status: response.status, data: { revision: json.revision, progress: json.progress === null ? null : progressSchema.parse(json.progress) } };
-}
 export function useProgress(userId: string | null, onError: (message: string) => void) {
   const owner = userId || 'guest';
   const [state, setState] = useState<{ owner: string; progress: Progress }>({ owner: '', progress: emptyProgress() });
