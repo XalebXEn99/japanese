@@ -37,7 +37,7 @@ test('live Better Auth UI restores sessions and syncs across browser profiles', 
     const failure = body && typeof body === 'object' && 'message' in body ? String(body.message) : 'No error detail returned';
     expect(response.status(), failure).toBe(200);
     expect(userId).toBeTruthy();
-    await expect(page.getByText(email, { exact: true })).toBeVisible();
+    await expect(page.getByText(email, { exact: true })).toBeVisible({ timeout: 30000 });
     await expectSynced(page);
     await page.goto('/#settings');
     const saved = page.waitForResponse(response => new URL(response.url()).pathname.endsWith('/app_progress') && ['POST', 'PATCH'].includes(response.request().method()) && response.request().postDataJSON()?.progress?.settings?.showRomaji === false);
@@ -54,19 +54,19 @@ test('live Better Auth UI restores sessions and syncs across browser profiles', 
       await other.getByLabel('Email', { exact: true }).fill(email);
       await other.getByLabel('Password', { exact: true }).fill(password);
       await other.locator('main').getByRole('button', { name: 'Sign in', exact: true }).click();
-      await expect(other.getByText(email, { exact: true })).toBeVisible();
+      await expect(other.getByText(email, { exact: true })).toBeVisible({ timeout: 30000 });
       await expectSynced(other);
       await expect(other.locator('.topbar').getByRole('button', { name: 'Account: Scoped UI test', exact: true })).toHaveText('S');
       await other.goto('/#settings');
       await expect(other.getByLabel('Show romaji', { exact: true })).not.toBeChecked();
       await other.goto('/#account');
       await other.getByRole('button', { name: 'Sign out', exact: true }).click();
-      await expect(other.locator('.topbar').getByRole('button', { name: 'Sign in', exact: true })).toBeVisible();
+      await expect(other.locator('.topbar').getByRole('button', { name: 'Sign in', exact: true })).toBeVisible({ timeout: 30000 });
       await other.goto('/#account');
       await other.getByLabel('Email', { exact: true }).fill(email);
       await other.getByLabel('Password', { exact: true }).fill('deliberately-wrong-password');
       await other.locator('main').getByRole('button', { name: 'Sign in', exact: true }).click();
-      await expect(other.getByRole('alert')).toBeVisible();
+      await expect(other.getByRole('alert')).toBeVisible({ timeout: 30000 });
     } finally { await second.close(); }
   } finally {
     await first.close();
