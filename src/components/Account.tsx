@@ -3,6 +3,14 @@ import { authClient } from '../lib/auth';
 import Dialog from './Dialog';
 
 export interface User { id: string; email: string; name?: string }
+export function AccountButton({ user, ready, onClick }: { user: User | null; ready: boolean; onClick: () => void }) {
+  const name = user?.name?.trim() || 'Account';
+  const initial = Array.from(name.normalize('NFC'))[0]?.toLocaleUpperCase() ?? 'A';
+  return <button className={`account-button${user ? ' account-avatar' : ''}`} aria-label={user ? `Account: ${name}` : undefined} title={user ? name : undefined} onClick={onClick}>
+    {!ready ? 'Connecting…' : user ? initial : 'Sign in'}
+  </button>;
+}
+
 export default function Account({ user, error, onSession, onError, onClose }: {
   user: User | null; error: string; onSession: () => Promise<void>; onError: (message: string) => void; onClose: () => void;
 }) {

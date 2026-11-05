@@ -40,6 +40,7 @@ body { background: var(--page); color: var(--ink); }
 .topbar nav a[aria-current], .topbar nav a:hover { background: var(--soft); color: var(--green); border-bottom-color: var(--green); }
 .header-controls { display: flex; align-items: center; gap: 10px; flex-shrink: 0; }
 .topbar .account-button { max-width: 150px; overflow: hidden; text-overflow: ellipsis; white-space: nowrap; }
+.topbar .account-button.account-avatar { display: grid; place-items: center; width: 44px; height: 44px; min-width: 44px; padding: 0; border-radius: 50%; font-size: 1rem; font-weight: 600; color: var(--green); background-color: var(--soft); }
 .theme-control { position: relative; display: flex; width: 144px; min-width: 144px; height: 46px; margin: 0; padding: 4px; border: 1px solid var(--line); border-radius: 25px; background: color-mix(in srgb, var(--soft) 80%, var(--line)); box-shadow: inset 0 2px 5px #00000014, 0 1px var(--shine); }
 .theme-thumb { position: absolute; left: 4px; top: 4px; bottom: 4px; width: calc((100% - 8px) / 3); border-radius: 22px; background: linear-gradient(160deg, var(--shine), transparent), var(--surface); box-shadow: 0 2px 5px #0003, inset 0 1px var(--shine); transition: transform .24s cubic-bezier(.2,.8,.2,1); pointer-events: none; }
 .theme-option { position: relative; flex: 1; align-items: center; justify-content: center; cursor: pointer; color: var(--muted); }
@@ -52,7 +53,9 @@ body { background: var(--page); color: var(--ink); }
 .ambient-controls summary::-webkit-details-marker { display: none; }
 .ambient-controls summary svg { width: 21px; height: 21px; }
 .ambient-controls .sound-playing { color: var(--green); background-color: var(--soft); }
-.ambient-panel { display: grid; gap: 18px; position: absolute; right: 0; top: calc(100% + 15px); width: 260px; padding: 22px; border: 1px solid var(--line); background: var(--surface); border-radius: 18px; box-shadow: 0 12px 40px #0003, inset 0 1px var(--shine); }
+.ambient-panel { display: grid; gap: 18px; position: absolute; z-index: 1; right: 0; top: calc(100% + 15px); width: 260px; padding: 22px; border: 1px solid var(--line); background: var(--surface); border-radius: 18px; box-shadow: 0 12px 40px #0003, inset 0 1px var(--shine); }
+.ambient-playback { display: flex; align-items: center; justify-content: center; gap: 8px; min-height: 44px; }
+.ambient-playback svg { width: 18px; height: 18px; }
 .volume-control > span { display: flex; justify-content: space-between; }
 .volume-control output { color: var(--muted); font-variant-numeric: tabular-nums; }
 .ambient-panel input[type=range] { appearance: none; width: 100%; padding: 0; height: 44px; border: 0; border-radius: 0; background: linear-gradient(var(--green), var(--green)) no-repeat left center; cursor: pointer; }

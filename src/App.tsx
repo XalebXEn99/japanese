@@ -7,7 +7,7 @@ import { authClient } from './lib/auth';
 import { exportProgress, readProgress } from './lib/storage';
 import { useProgress } from './hooks/useProgress';
 import AudioButton from './components/AudioButton';
-import Account, { type User } from './components/Account';
+import Account, { AccountButton, type User } from './components/Account';
 import Course from './components/Course';
 import Dialog from './components/Dialog';
 import Flashcards from './components/Flashcards';
@@ -122,7 +122,7 @@ export default function App() {
       <header className="topbar">
         <a className="brand" href="#home" aria-label="化 Home"><span className="brand-mark" lang="ja">化</span><span className="brand-word">ka<small>change</small></span></a>
         <nav aria-label="Main navigation">{navigation.map(([id, label]) => <a key={id} href={`#${id}`} aria-current={page === id ? 'page' : undefined}>{label}{id === 'review' && dueCount > 0 && <span className="nav-count">{dueCount}</span>}</a>)}</nav>
-        <div className="header-controls"><ThemeSlider mode={appearance.mode} onChange={appearance.setMode} /><AmbientControls onError={notify} /><button className="account-button" onClick={() => navigate('account')}>{!authReady ? 'Connecting…' : user ? user.name || 'Account' : 'Sign in'}</button></div>
+        <div className="header-controls"><ThemeSlider mode={appearance.mode} onChange={appearance.setMode} /><AmbientControls onError={notify} /><AccountButton user={user} ready={authReady} onClick={() => navigate('account')} /></div>
       </header>
       <main id="main-content">
         {error && page !== 'account' && <div className="error-banner" role="alert"><span>{error}</span><button onClick={() => setError('')} aria-label="Dismiss error">Dismiss</button></div>}

@@ -15,7 +15,8 @@ A functional, responsive Japanese study app for personal, noncommercial use. The
 - Daily level-aware sentence/listening challenges, optional Japanese microphone input, streaks, and review graphs.
 - Light, dark, and seasonal appearance with a three-position icon toggle in the header and Settings. Seasonal mode follows Japan's calendar and your device's local time: night 00:00–06:00, day 06:00–18:00, evening 18:00–24:00.
 - 24 individually generated landscapes: two scenes per season, each with day, evening, and night art. Original PNGs are preserved at 1536×1024 or approximately 1672×940; none are cropped from image sheets or upscaled. Scenes crossfade every minute, with pause/next controls and reduced-motion support.
-- Opt-in rain, stream, white noise, and pentatonic chimes generated locally with Web Audio; adjustable volume and no autoplay.
+- Opt-in rain, stream, white noise, and pentatonic chimes generated locally with Web Audio; adjustable volume, play/pause, and sound changes during playback. The popup closes on outside click or Escape without stopping the audio. No autoplay.
+- Signed-in accounts show a name initial in the header, with an accessible full-name label.
 - Centered account dialogs and a docked footer for sources/licenses and icon-only scenery controls.
 
 ### Content coverage

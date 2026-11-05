@@ -55,7 +55,7 @@ test('live Better Auth UI restores sessions and syncs across browser profiles', 
     await expectSynced(page);
     await page.reload();
     await expect(page.getByLabel('Show romaji', { exact: true })).not.toBeChecked();
-    await expect(page.locator('.topbar')).toContainText('Scoped UI test');
+    await expect(page.locator('.topbar').getByRole('button', { name: 'Account: Scoped UI test', exact: true })).toHaveText('S');
     const second = await browser.newContext();
     await connectApi(second);
     try {
@@ -66,6 +66,7 @@ test('live Better Auth UI restores sessions and syncs across browser profiles', 
       await other.locator('main').getByRole('button', { name: 'Sign in', exact: true }).click();
       await expect(other.getByText(email, { exact: true })).toBeVisible();
       await expectSynced(other);
+      await expect(other.locator('.topbar').getByRole('button', { name: 'Account: Scoped UI test', exact: true })).toHaveText('S');
       await other.goto('/#settings');
       await expect(other.getByLabel('Show romaji', { exact: true })).not.toBeChecked();
       await other.goto('/#account');
